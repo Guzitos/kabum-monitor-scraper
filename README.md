@@ -30,17 +30,16 @@ Este projeto realiza a raspagem de dados de monitores do site da [Kabum](https:/
 ```bash
 git clone https://github.com/seu-usuario/kabum-monitor-scraper.git
 cd kabum-monitor-scraper
-2. Instale as dependências
-bash
-Copiar
-Editar
-pip install selenium mysql-connector-python
-3. Configure o banco de dados MySQL
-No seu MySQL, crie o banco e a tabela:
+```
 
-sql
-Copiar
-Editar
+### 2. Instale as dependências
+```bash
+pip install selenium mysql-connector-python
+```
+
+### 3. Configure o banco de dados MySQL
+No seu MySQL, crie o banco e a tabela:
+```bash
 CREATE DATABASE vendaskabum;
 
 USE vendaskabum;
@@ -53,20 +52,17 @@ CREATE TABLE monitores (
   avaliacao VARCHAR(50),
   frete_gratis VARCHAR(100)
 );
-4. Atualize suas credenciais no código
+```
+### 4. Agora no python atualize suas credenciais no código
 No trecho:
 
-python
-Copiar
-Editar
 conexao = mysql.connector.connect(
     host="localhost",
     user="SEU_USUARIO",
     password="SUA_SENHA",
     database="vendaskabum"
 )
-5. Execute o script
-bash
-Copiar
-Editar
-python kabum_scraper.py
+
+### 5. Execute o script
+```bash
+python kabum_monitor.py
