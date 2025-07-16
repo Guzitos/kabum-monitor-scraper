@@ -1,84 +1,96 @@
 import mysql.connector
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from openpyxl import Workbook, load_workbook
 import time
 import os
 
+# Conexão com MySQL
 conexao = mysql.connector.connect(
     host="localhost",
     user="your-username",
     password="your-password",
     database="your-database"
 )
-
 cursor = conexao.cursor()
-
-# Caminho do arquivo XLSX
-arquivo_xlsx = "monitores_kabum.xlsx"
-existe = os.path.isfile(arquivo_xlsx)
-
-# Abrir arquivo XLSX
-with open(arquivo_xlsx, mode='a', newline='', encoding='utf-8') as arquivo:
-    writer = arquivo_xlsx.writer(arquivo)
-
 
 # Iniciar o navegador
 navegador = webdriver.Chrome()
 navegador.maximize_window()
 
+# Configurar Excel
+excel_path = "monitores_kabum.xlsx"
+
+if os.path.exists(excel_path):
+    wb = load_workbook(excel_path)
+    ws = wb.active
+else:
+    wb = Workbook()
+    ws = wb.active
+    ws.append(["Nome", "Preço", "Desconto", "Avaliação", "Frete Grátis"])
+
 # Variáveis de controle
 pagina = 1
 produtos_coletados = 0
-limite = 10  # Alterar para 100 ou o quanto quiser
+limite = 5  # Quantos produtos deseja coletar
 
-#Enquanto não bater o limite
 while produtos_coletados < limite:
-        url_pagina = f"https://www.kabum.com.br/computadores/monitores?page={pagina}"
-        navegador.get(url_pagina)
-        time.sleep(2)
+    url_pagina = f"https://www.kabum.com.br/computadores/monitores?page={pagina}"
+    navegador.get(url_pagina)
+    time.sleep(2)
 
-        # Pega todos os cards de produto
-        produtos = navegador.find_elements(By.CLASS_NAME, "productCard")
+    produtos = navegador.find_elements(By.CLASS_NAME, "productCard")
 
-        if not produtos:
-            print("❌ Nenhum produto encontrado. Encerrando.")
+    if not produtos:
+        print("❌ Nenhum produto encontrado. Encerrando.")
+        break
+
+    for produto in produtos:
+        if produtos_coletados >= limite:
             break
 
-        for produto in produtos:
-            if produtos_coletados >= limite:
-                break
+        nome = produto.find_element(By.CLASS_NAME, "sc-27518a44-8").text
+        preco = produto.find_element(By.CLASS_NAME, "sc-57f0fd6e-2").text
 
-            nome = produto.find_element(By.CLASS_NAME, "sc-27518a44-8").text
-            preco = produto.find_element(By.CLASS_NAME, "sc-57f0fd6e-2").text
+        try:
+            avaliacao = produto.find_element(By.CLASS_NAME, "leading-none").text
+        except:
+            avaliacao = "(0)"
 
-            try:
-                avaliacao = produto.find_element(By.CLASS_NAME, "leading-none").text
-            except:
-                avaliacao = "(0)"
+        try:
+            frete = produto.find_element(By.CLASS_NAME, "w-max").text
+        except:
+            frete = "Sem frete grátis"
 
-            try:
-                frete = produto.find_element(By.CLASS_NAME, "w-max").text
-            except:
-                frete = "Sem frete grátis"
+        try:
+            desconto = produto.find_element(By.CLASS_NAME, "ary-500").text
+        except:
+            desconto = "Sem desconto"
 
-            try:
-                desconto = produto.find_element(By.CLASS_NAME, "ary-500").text
-            except:
-                desconto = "Sem desconto"
-
+        # Verificar se já existe no banco
+        cursor.execute("SELECT id FROM monitores WHERE nome = %s", (nome,))
+        cursor.fetchall()  # Consome o resultado para evitar erro
+        if cursor.rowcount > 0:
+            print(f"⚠️ Produto já existe: {nome}")
+        else:
+            # Inserir no banco
             sql = "INSERT INTO monitores (nome, preco, desconto, avaliacao, frete_gratis) VALUES (%s, %s, %s, %s, %s)"
             valores = (nome, preco, desconto, avaliacao, frete)
             cursor.execute(sql, valores)
             conexao.commit()
 
-        try:
-            cursor.execute(sql, valores)
-            conexao.commit()
-
-            #Escrever no arquivo excel
-            writer.writerow([nome, preco, desconto, avaliacao, frete])
+            # Inserir no Excel
+            ws.append([nome, preco, desconto, avaliacao, frete])
+            wb.save(excel_path)
 
             produtos_coletados += 1
             print(f"✅ Inserido: {produtos_coletados} - {nome}")
-        except mysql.connector.errors.IntegrityError:
-            print(f"⚠️ Produto duplicado (não inserido): {nome}")
+
+    pagina += 1
+
+# Finalização
+navegador.quit()
+cursor.close()
+conexao.close()
+print("✅ Raspagem finalizada com sucesso.")
+print(f"📁 Dados salvos em: {excel_path}")
