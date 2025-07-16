@@ -2,6 +2,7 @@ import mysql.connector
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
+import os
 
 conexao = mysql.connector.connect(
     host="localhost",
@@ -11,6 +12,15 @@ conexao = mysql.connector.connect(
 )
 
 cursor = conexao.cursor()
+
+# Caminho do arquivo XLSX
+arquivo_xlsx = "monitores_kabum.xlsx"
+existe = os.path.isfile(arquivo_xlsx)
+
+# Abrir arquivo XLSX
+with open(arquivo_xlsx, mode='a', newline='', encoding='utf-8') as arquivo:
+    writer = arquivo_xlsx.writer(arquivo)
+
 
 # Iniciar o navegador
 navegador = webdriver.Chrome()
@@ -56,20 +66,19 @@ while produtos_coletados < limite:
             except:
                 desconto = "Sem desconto"
 
-
             sql = "INSERT INTO monitores (nome, preco, desconto, avaliacao, frete_gratis) VALUES (%s, %s, %s, %s, %s)"
             valores = (nome, preco, desconto, avaliacao, frete)
             cursor.execute(sql, valores)
             conexao.commit()
 
-            produtos_coletados += 1
-            print(f"✅ Inserido: {produtos_coletados} - {nome}")
-
         try:
             cursor.execute(sql, valores)
             conexao.commit()
+
+            #Escrever no arquivo excel
+            writer.writerow([nome, preco, desconto, avaliacao, frete])
+
             produtos_coletados += 1
             print(f"✅ Inserido: {produtos_coletados} - {nome}")
-
         except mysql.connector.errors.IntegrityError:
             print(f"⚠️ Produto duplicado (não inserido): {nome}")
