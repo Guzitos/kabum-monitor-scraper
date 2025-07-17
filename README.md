@@ -1,68 +1,103 @@
-# 📊 Kabum Monitor Scraper
+### 🖥️ Kabum Monitor – Raspagem de Monitores com Python
+Projeto feito em Python para raspagem automática de dados do site Kabum, armazenando os resultados em:
 
-Este projeto realiza a raspagem de dados de monitores do site da [Kabum](https://www.kabum.com.br) utilizando **Selenium** e armazena as informações diretamente em um banco de dados **MySQL**. A estrutura está pronta para ser usada em análises, automações ou integração com dashboards.
+Um banco de dados MySQL
 
----
+Um arquivo Excel (.xlsx)
 
-## 🚀 Funcionalidades
+E enviando um e-mail automático com o Excel em anexo
 
-- Raspagem de dados com Selenium (nome, preço, avaliação, frete e desconto)
-- Paginação automática para coletar múltiplos produtos
-- Integração com banco de dados MySQL
-- Prevenção de dados duplicados via checagem no banco
-- Totalmente automatizável para uso diário ou em servidores
+📌 Funcionalidades
+✅ Raspagem de monitores com Selenium
 
----
+✅ Armazenamento no MySQL para evitar duplicados
 
-## 🧰 Tecnologias utilizadas
+✅ Exportação para planilha Excel
 
-- Python 3.x
-- [Selenium](https://selenium.dev/)
-- [MySQL](https://www.mysql.com/)
-- [mysql-connector-python](https://pypi.org/project/mysql-connector-python/)
-- Google Chrome + ChromeDriver
+✅ Envio automático por e-mail com anexo
 
----
+✅ Executável .exe para rodar com duplo clique
 
-## 🛠️ Como executar o projeto
+### 🧱 Tecnologias utilizadas
+Python 3.13
 
-### 1. Clone o repositório
-```bash
-git clone https://github.com/seu-usuario/kabum-monitor-scraper.git
-cd kabum-monitor-scraper
+Selenium
+
+openpyxl
+
+MySQL (via mysql-connector-python)
+
+smtplib (e-mail)
+
+PyInstaller (para criar o .exe)
+
+
+📦 Como rodar o projeto localmente
+
+### 1. Clone o repositório:
+```
+git clone https://github.com/seu-usuario/kabum-monitor.git
+cd kabum-monitor
+````
+
+### 3. Instale as dependências:
+```
+pip install -r requirements.txt
 ```
 
-### 2. Instale as dependências
-```bash
-pip install selenium mysql-connector-python
+### 4. Configure seu banco MySQL:
+Crie um banco chamado vendaskabum e uma tabela monitores:
 ```
-
-### 3. Configure o banco de dados MySQL
-No seu MySQL, crie o banco e a tabela:
-```bash
 CREATE DATABASE vendaskabum;
 
 USE vendaskabum;
 
 CREATE TABLE monitores (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  nome VARCHAR(255) UNIQUE,
-  preco VARCHAR(50),
-  desconto VARCHAR(50),
-  avaliacao VARCHAR(50),
-  frete_gratis VARCHAR(100)
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(255),
+    preco VARCHAR(50),
+    desconto VARCHAR(50),
+    avaliacao VARCHAR(20),
+    frete_gratis VARCHAR(50)
 );
 ```
-### 4. Agora no python atualize suas credenciais no código
-No trecho:
 
-conexao = mysql.connector.connect(
-    host="localhost",
-    user="SEU_USUARIO",
-    password="SUA_SENHA",
-    database="vendaskabum"
-)
+### 5. Atualize as credenciais do e-mail
+No arquivo enviargmail.py, substitua:
+```
+email_remetente = 'seu_email@gmail.com'
+senha = 'sua_senha_de_app'
+Você pode gerar uma senha de app aqui: https://myaccount.google.com/apppasswords
+```
 
-### 5. Execute o script
-```bash
+### 6. Execute o projeto:
 python kabum_monitor.py
+📁 Estrutura do projeto
+
+ChatBot/
+├── kabum_monitor.py         # Script principal
+
+├── coleta.py                # Raspagem com Selenium
+
+├── banco.py                 # Interação com MySQL
+
+├── excel.py                 # Controle do Excel
+
+├── enviargmail.py           # Envio de e-mail com anexo
+
+├── monitores_kabum.xlsx     # Planilha gerada (opcional)
+
+├── README.md                # Este arquivo
+
+🧪 Gerar .exe (opcional)
+Para criar um .exe e rodar com duplo clique:
+```
+pip install pyinstaller
+pyinstaller --onefile kabum_monitor.py
+O executável ficará na pasta dist/.
+```
+
+📬 Contato
+Feito por Gustavo Rodrigues
+
+Se quiser trocar ideias, me chama por aqui!
