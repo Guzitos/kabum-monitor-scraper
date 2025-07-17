@@ -2,28 +2,22 @@ import smtplib
 import os
 from email.message import EmailMessage
 
-def enviar_email():
-
-    from kabum_monitor import excel_path
-
+def enviar_email(caminho_arquivo):
     # Configurações do remetente
-    email_remetente = 'emailRemetente@gmail.com'
-    senha = 'sua_senha' # Atalho: https://myaccount.google.com/apppasswords
-    email_destinatario = 'emailDestinatario@gmail.com'
+    email_remetente = 'gmail.com'
+    senha = 'sua_senha' #atalho https://myaccount.google.com/apppasswords
+    email_destinatario = 'gmail.com'
 
     # Criar o e-mail
     msg = EmailMessage()
-    msg['Subject'] = 'Assunto do Email'
+    msg['Subject'] = 'Relatório Kabum'
     msg['From'] = email_remetente
     msg['To'] = email_destinatario
     msg.set_content('Olá! Este é o corpo do email com um anexo.')
 
-    # Caminho do arquivo a ser anexado
-
-    caminho_arquivo = excel_path  # substitua pelo nome do seu arquivo
+    # Anexar o arquivo
     nome_arquivo = os.path.basename(caminho_arquivo)
 
-    # Ler e anexar o arquivo
     with open(caminho_arquivo, 'rb') as arquivo:
         conteudo = arquivo.read()
         msg.add_attachment(
@@ -38,5 +32,4 @@ def enviar_email():
         smtp.login(email_remetente, senha)
         smtp.send_message(msg)
 
-    print("E-mail enviado com sucesso!")
-
+    print("📧 E-mail enviado com sucesso!")
