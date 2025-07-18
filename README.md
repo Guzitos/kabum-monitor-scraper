@@ -1,13 +1,14 @@
-### 🖥️ Kabum Monitor – Raspagem de Monitores com Python
+# 🖥️ Kabum Monitor – Raspagem de Monitores com Python
 Projeto feito em Python para raspagem automática de dados do site Kabum, armazenando os resultados em:
 
-Um banco de dados MySQL
+- **Um banco de dados MySQL**
 
-Um arquivo Excel (.xlsx)
+- **Um arquivo Excel (.xlsx)**
 
-E enviando um e-mail automático com o Excel em anexo
+- **E enviando um e-mail automático com o Excel em anexo**
 
-📌 Funcionalidades
+## 📌 Funcionalidades
+
 ✅ Raspagem de monitores com Selenium
 
 ✅ Armazenamento no MySQL para evitar duplicados
@@ -18,21 +19,17 @@ E enviando um e-mail automático com o Excel em anexo
 
 ✅ Executável .exe para rodar com duplo clique
 
-### 🧱 Tecnologias utilizadas
-Python 3.13
 
-Selenium
+## 🚀 Tecnologias utilizadas
 
-openpyxl
+- **Python 3.13**
+- **Selenium**
+- **openpyxl**
+- **MySQL (via mysql-connector-python)**
+- **smtplib (e-mail)**
+- **PyInstaller (para criar o .exe)**
 
-MySQL (via mysql-connector-python)
-
-smtplib (e-mail)
-
-PyInstaller (para criar o .exe)
-
-
-📦 Como rodar o projeto localmente
+# 📦 Como rodar o projeto localmente
 
 ### 1. Clone o repositório:
 ```
@@ -74,7 +71,6 @@ Você pode gerar uma senha de app aqui: https://myaccount.google.com/apppassword
 python kabum_monitor.py
 📁 Estrutura do projeto
 
-ChatBot/
 ├── kabum_monitor.py         # Script principal
 
 ├── coleta.py                # Raspagem com Selenium
@@ -98,6 +94,6 @@ O executável ficará na pasta dist/.
 ```
 
 📬 Contato
-Feito por Gustavo Rodrigues
+### Feito por Gustavo Rodrigues
 
 Se quiser trocar ideias, me chama por aqui!
