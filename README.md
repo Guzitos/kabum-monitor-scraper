@@ -94,6 +94,7 @@ O executável ficará na pasta dist/.
 ```
 
 📬 Contato
-### Feito por Gustavo Rodrigues
+
+## 👨‍💻 Autor @Guzitos
 
 Se quiser trocar ideias, me chama por aqui!
